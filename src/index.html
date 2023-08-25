@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tauri App</title>
+  <script type="module" src="/mods.js" defer></script>
+  <script type="module" src="/main.js" defer></script>
+</head>
+
+<body>
+  <div class="top inline">
+    <div class="col">
+      <select id="select-lsit">
+        <option value="default">Выберете порт</option>
+        <option>Выберете порт</option>
+        <option>Выберете порт</option>
+        <option>Выберете порт</option>
+      </select>
+      <div class="inline">
+        <button id="back">
+          |◀
+        </button>
+        <div class="col">
+          <button id="SM" class="center-button">
+            STOP
+          </button>
+          <button id="DW" class="center-button">
+            OFF
+          </button>
+        </div>
+        <button id="next">
+          ▶|
+        </button>
+      </div>
+      <div class="col change-direction">
+        <p>Смена направления</p>
+        <div class="inline">
+          <button id="to-start" class="switch">
+            <p class="revert">➟</p>
+          </button>
+          <button id="to-end" class="switch">➟</button>
+        </div>
+      </div>
+      <div class="control-menu col">
+        <div class="delay col">
+          <p>Время задержки</p>
+          <div class="inline">
+            <input id="rangeValue" value="100" oninput="delay.value = this.value">
+            <input type="range" class="slider" id="delay" oninput="rangeValue.value = this.value" value="100" min="50"
+              max="2000">
+          </div>
+        </div>
+        <div class="color inline">
+          <input type="color" id="color">
+          <p class="text">Цвет</p>
+        </div>
+        <div class="brightnes inline">
+          <input type="range" id="brightnes" min="0" max="255" value="255" class="slider">
+          <p class="text">Яркость</p>
+        </div>
+      </div>
+    </div>
+    <div class="content col">
+      <button id="about" class="center-content">О программе</button>
+      <div id="about-mode">
+        <h4>Заголовок</h4>
+        <p>Инфорция о режиме</p>
+      </div>
+      <button id="send-mode">Применить режим</button>
+    </div>
+    <div class="button-block">
+      <button id="up" class="scroll-mode">▲</button>
+      <div class="mods"></div>
+      <button id="down" class="scroll-mode">▼</button>
+    </div>
+  </div>
+  <div class="line"></div>
+  <div id="leds-container" class="preview inline">
+  </div>
+  <div class="inline container">
+
+  </div>
+</body>
+<style class="colorSlider" type="text/css"></style>
+<style class="view" type="text/css"></style>
+
+</html>
