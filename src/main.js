@@ -174,6 +174,7 @@ function setup() {
     btn.className = 'modButton'
 
     btn.addEventListener("click", (e) => {
+      
       var button = e.target;
       button.style = "background-color: #202020;"
       last.style = "";
@@ -185,7 +186,6 @@ function setup() {
       if (index < 17 && index != 1) {
         colorInput.value = '#ffffff';
         colorInput.disabled = true;
-        console.log('disable')
         // colorInput.readOnly = true;
       }
       else{
@@ -243,6 +243,8 @@ function setup() {
       actual_to_start();
       view_leds();
     }, document.getElementById('delay').value, view);
+    set_mode(40);
+    send_mode();
   })
   document.getElementById('to-end').addEventListener('click', (e) => {
     clearTimeout(timer);
@@ -251,6 +253,8 @@ function setup() {
       actual_to_end();
       view_leds();
     }, document.getElementById('delay').value, view);
+    set_mode(39);
+    send_mode();
   })
 
   document.getElementById('next').addEventListener('click', (e) => {
@@ -364,6 +368,7 @@ function setup() {
       view_leds();
       sendButton.disabled = true;
       sendButton.style = 'background-color: #46464630; color: #ffffff30'
+
     } else {
       drop_value();
       setColor(colorInput.value)
@@ -379,8 +384,12 @@ function setup() {
   btnSM.addEventListener('click', () => {
     btnSM.innerHTML = statusMode[(sm = !sm) ? 1 : 0]
     if (!sm) {
+      set_mode(0);
+      send_mode();
       clearTimeout(timer);
     } else {
+      set_mode(view_mods.indexOf(lastMode));
+      send_mode();
       timer = setInterval(() => {
         lastMode();
         view_leds();

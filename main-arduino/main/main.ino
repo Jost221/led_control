@@ -5,10 +5,10 @@ CRGB leds[NUM_LEDS];
 
 int delayTime = 50;
 
-int ledMode = 25;
+int ledMode = 27;
 int lastMode = 0;
 byte counter = 0;
-byte color[] = {255, 255, 0};
+byte color[] = { 255, 255, 0 };
 bool direction = 0;
 byte mode = 0;
 byte index = 0;
@@ -22,21 +22,21 @@ int StartHeight = 1;
 const int BallCount = 3;
 
 float Height[BallCount];
-float ImpactVelocityStart = sqrt( -2 * Gravity * StartHeight );
+float ImpactVelocityStart = sqrt(-2 * Gravity * StartHeight);
 float ImpactVelocity[BallCount];
 float TimeSinceLastBounce[BallCount];
-int   Position[BallCount];
-long  ClockTimeSinceLastBounce[BallCount];
+int Position[BallCount];
+long ClockTimeSinceLastBounce[BallCount];
 float Dampening[BallCount];
 
 void setup() {
-  FastLED.addLeds<WS2811, PIN, GRB>(leds, NUM_LEDS).setCorrection( TypicalLEDStrip );
+  FastLED.addLeds<WS2811, PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(255);
   one_color_all(0, 0, 0);
   FastLED.show();
   Serial.begin(9600);
 
-  for (int i = 0 ; i < BallCount ; i++) {
+  for (int i = 0; i < BallCount; i++) {
     ClockTimeSinceLastBounce[i] = millis();
     Height[i] = StartHeight;
     Position[i] = 0;
@@ -46,17 +46,29 @@ void setup() {
   }
 }
 
-void serialEvent(){
+void serialEvent() {
   delay(50);
-  switch (Serial.read()){      
+  lastMode = 0;
+  counter = 0;
+  direction = 0;
+  mode = 0;
+  index = 0;
+  step = 0;
+  len = 0;
+  crafty = 0;
+  switch (Serial.read()) {
     case 0:
       ledMode = Serial.read();
+      // if (ledMode != 39 && ledMode != 40 && ledMode != 0 && ledMode != 41){
+      //   for(int i = 0; i < NUM_LEDS; i++)
+      //     leds[i].setRGB(0, 0, 0);
+      // }
       break;
     case 1:
-      for(int i = 0; i < 3; i++){
+      for (int i = 0; i < 3; i++) {
         color[i] = Serial.read();
       }
-      while(Serial.available()){
+      while (Serial.available()) {
         Serial.read();
       }
       break;
@@ -66,23 +78,10 @@ void serialEvent(){
     case 3:
       delayTime = Serial.parseInt();
   }
-  for(int i = 0; i < NUM_LEDS; i++){
-    leds[i].setRGB(0, 0, 0);
-  }
-  Serial.print(color[0]);
-  Serial.print(" ");
-  Serial.print(color[1]);
-  Serial.print(" ");
-  Serial.print(color[2]);
-  Serial.print(" ");
-  Serial.print(ledMode);
-  Serial.print(" ");
-  Serial.print(FastLED.getBrightness());
-  Serial.print("\n");
 }
 
 void loop() {
-  switch(ledMode){
+  switch (ledMode) {
     case 0: break;
     case 1: raibowWave(); break;
     case 2: one_color_all(color[0], color[1], color[2]); break;
@@ -90,7 +89,7 @@ void loop() {
     case 4: rainbowSlider(); break;
     case 5: rainbowTrain(); break;
     case 6: verticalRainbow(); break;
-    case 7: redToRainbow(); break; // не работает изза кривого рандома
+    case 7: redToRainbow(); break;  // не работает изза кривого рандома
     case 8: reversRainbowWave(); break;
     case 9: lotsOfRainbowDots(); break;
     case 10: randomizer(); break;
@@ -105,7 +104,7 @@ void loop() {
     case 19: white_temps(); break;
     case 20: whiteFlashesOnWhite(); break;
     case 21: runRed(); break;
-    case 22: runRedTrain(); break;   
+    case 22: runRedTrain(); break;
     case 23: flickerRed(); break;
     case 24: pulseToRedColor(); break;
     case 25: wormtToCenter(); break;
@@ -121,20 +120,13 @@ void loop() {
     case 35: sinusTrain(); break;
     case 36: doteToCenter(); break;
     case 37: flickering(); break;
-    case 38: bouncingBalls(); break; // снов лень, снова просто редачу
+    case 38: bouncingBalls(); break;  // снов лень, снова просто редачу
 
     case 39: actual_to_end(); break;
     case 40: actual_to_start(); break;
-    // default:
-    //   Serial.print(ledMode);
-    //   if (ledMode >= 256 && ledMode <= 511) {
-    //     color = ledMode % 256;
-    //   } else if (ledMode >= 512 && ledMode <= 768) {
-    //     LEDS.setBrightness(ledMode % 256);
-    //   }
-    //   ledMode = lastMode;
+    case 41: one_color_all(0, 0, 0); break;
   }
   FastLED.show();
   // Serial.println();
-  delay(delayTime);         // скорость движения радуги
+  delay(delayTime);  // скорость движения радуги
 }

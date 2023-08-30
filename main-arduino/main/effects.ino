@@ -50,7 +50,7 @@ void runRedTrain() {
   }
   for (int i = 10; i >= 0; i--){
     float modif = sin(i * 0.314);
-    leds[index + i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    leds[index + i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   }
 
   if (index >= NUM_LEDS - 10)
@@ -75,17 +75,15 @@ void flickerRed() {
   if (counter++ < 5)
     return;
   counter = 0;
-  byte col = random(0, 5);
-  for (int i = 0; i < NUM_LEDS; i++){
-    float modif = my_map(col, 0, 4, 0, 255);
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
-  }
+  float modif = my_map(random(0, 5), 0, 4, 0, 1);
+  for (int i = 0; i < NUM_LEDS; i++)
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
 }
 
 void pulseToRedColor() {
   float modif = my_map(counter, 0, 255, 0, 1);
   for (int i = 0; i < NUM_LEDS; i++)
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   if (counter >= 255 || counter <= 0)
         mode = !mode;
     mode ? counter++ : counter--;
@@ -107,19 +105,19 @@ void wormtToCenter() {
   byte temporary1 = counter;
   for (int i = NUM_LEDS / 2; i >= 0; i--){
     float modif = my_map(temporary1+=35, 0, 255, 0, 1);
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   }
     
   for (int i = NUM_LEDS / 2; i < NUM_LEDS; i++){
     float modif = my_map(temporary+=35, 0, 255, 0, 1);
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   }
   counter += 10;
 }
 
 void randomRed() {
   float modif = (float)random(0, 100)/100.0;
-  leds[random(0, NUM_LEDS)].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+  leds[random(0, NUM_LEDS)].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
 }
 
 void rainbowTrain() {
@@ -165,7 +163,7 @@ void white_temps() {  // какая то хуйня показывающая х�
 
 void sinusTrain() {
   float modif = int(sin(my_map(counter += 15, 0, 255, 0.0, 3.14)) * 255);
-  leds[index].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+  leds[index].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   PluslIndex();
 }
 
@@ -181,9 +179,8 @@ void doteToCenter() {
 
 void bigSinus() {
   for (int i = 0; i < NUM_LEDS; i++){
-    float modif = my_map(sin(my_map(i, 0, NUM_LEDS, 0.0, 3.14)) * 240, 0, 255, 0, 1);
-    Serial.println(modif);
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    float modif = sin(my_map(i, 0, NUM_LEDS, 0.0, 3.14));
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   }
 }
 
@@ -295,7 +292,7 @@ void runWorm() {
   if (flag)
     for (int i = 0; i < NUM_LEDS / 10; i++){
       float modif = sin(my_map(i, 0, NUM_LEDS / 10 - 1, 0.0, 3.14));
-      leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+      leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
     }
   if (leds[0].r != 0 || leds[0].g != 0 || leds[0].b != 0 || leds[NUM_LEDS - 1].r != 0 || leds[NUM_LEDS - 1].g != 0 || leds[NUM_LEDS - 1].b != 0)
     direction = !direction;
@@ -347,8 +344,8 @@ void smallFastSinusTrain() {
   // for (int i = 0; i < NUM_LEDS; i++)
   //   leds[i] = CHSV(0, 255, int(sin(my_map(counter += 30, 0, 255, 0.0, 3.14)) * 255));
   for (int i = 0; i < NUM_LEDS; i++){
-    int modif = int(sin(my_map(counter += 30, 0, 255, 0.0, 3.14)) * 255);
-    leds[i].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+    float modif = sin(my_map(counter += 30, 0, 255, 0.0, 3.14));
+    leds[i].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   }
 }
 
@@ -356,7 +353,7 @@ void whiteFlashesOnWhite() {
   for(byte i = 0; i < NUM_LEDS; i++)
     leds[i].setRGB(color[0]*0.5, color[1]*0.5, color[2]*0.5);
   float modif = my_map(random(100, 255), 100, 255, 0.4, 1.0);
-  leds[random(0, NUM_LEDS)].setRGB(color[0]*modif, color[1]*modif, color[2]*modif);
+  leds[random(0, NUM_LEDS)].setRGB((int)((1 - modif) * 0 + modif * color[0]), (int)((1 - modif) * 0 + modif * color[1]), (int)((1 - modif) * 0 + modif * color[2]));
   delay(300);
 }
 

@@ -285,11 +285,12 @@ export async function pulseToRedColor() {
 export async function wormtToCenter() {
     var temporary = counter;
     var temporary1 = counter;
+    console.log(((my_map(temporary1+=35, 0, 255, 0, 1)*255)/1).toString(16));
     var col = hexToRgb(color);
     for (let i = NUM_LEDS / 2; i >= 0; i--)
-        leds[i] = CHSV(RGBToHSL(col.r, col.g, col.b)[0], 100, 50, ((temporary1 += 35) % 100) * 0.01);
+        leds[i] = code(color+((temporary+=35)%255).toString(16));
     for (let i = NUM_LEDS / 2; i < NUM_LEDS; i++)
-        leds[i] = CHSV(RGBToHSL(col.r, col.g, col.b)[0], 100, 50, ((temporary += 35) % 100) * 0.01);
+        leds[i] = code(color+((temporary+=35)%255).toString(16));
     counter += 10;
 }
 
@@ -357,7 +358,8 @@ export async function runWorm() {
 
 export async function smallFastSinusTrain() {
     for (let i = 0; i < NUM_LEDS; i++)
-      leds[i] = code(color+VALtoHEX(Math.floor(Math.sin(my_map((counter += 26)%255, 0, 255, 0.0, 3.14)) * 255)));
+      var modif = Math.floor(Math.sin(my_map((counter += 26)%255, 0, 255, 0.0, 3.14)) * 255);
+      leds[i] = code(color+VALtoHEX(modif));
 }
 
 export async function lotsOfRedDots() {
