@@ -20,7 +20,7 @@ import {
 //   greetMsgEl.textContent = await invoke("biba", { x: Number(greetInputEl.value)});
 // }
 
-async function get_ports(){
+async function get_ports() {
   var items = JSON.parse(await invoke("get_ports"));
   console.log('updat port')
   selects.innerHTML = '';
@@ -30,31 +30,31 @@ async function get_ports(){
   }
 }
 
-async function set_port(){
-   await invoke("set_port", { portName: selects.value});
+async function set_port() {
+  await invoke("set_port", { portName: selects.value });
   console.log('set port')
 }
 
-async function set_mode(numMode){
-  await invoke("set_mode", { modeIndex: Number(numMode)});
-  console.log('set mode '+numMode)
+async function set_mode(numMode) {
+  await invoke("set_mode", { modeIndex: Number(numMode) });
+  console.log('set mode ' + numMode)
 }
 
-async function send_mode(){
+async function send_mode() {
   await invoke("send_mode");
 }
 
-async function set_color(){
+async function set_color() {
   console.log(colorInput.value)
-  await invoke("set_color", {colorCode: colorInput.value})
+  await invoke("set_color", { colorCode: colorInput.value })
 }
 
-async function set_brightnes(){
-  await invoke("set_brightnes", {brightnes: Number(brightnesSlider.value)});
+async function set_brightnes() {
+  await invoke("set_brightnes", { brightnes: Number(brightnesSlider.value) });
 }
 
-async function set_delay(value){
-  await invoke("set_delay", {delay: Number(value)})
+async function set_delay(value) {
+  await invoke("set_delay", { delay: Number(value) })
 }
 // window.addEventListener("DOMContentLoaded", () => {
 //   greetInputEl = document.querySelector("#greet-input");
@@ -140,7 +140,7 @@ const mods_comment = [
   'Прыгающие мячики (js не зорчет нормально отображать, в прошивке на ленты необзодиво изменить переменную "BallCount")'
 ]
 
-const view_mods = [() => {}, rainbow, one_color_all_code, transfusion, rainbowSlider, rainbowTrain,
+const view_mods = [() => { }, rainbow, one_color_all_code, transfusion, rainbowSlider, rainbowTrain,
   verticalRainbow, redToRainbow, reversRainbowWave, lotsOfRainbowDots,
   randomizer, runRedBlue, runRedBlueTrace, russia, randomPop, policeLight,
   rgb_sectors, fier, pulseColor, white_temps, whiteFlashesOnWhite, runRed,
@@ -174,7 +174,7 @@ function setup() {
     btn.className = 'modButton'
 
     btn.addEventListener("click", (e) => {
-      
+
       var button = e.target;
       button.style = "background-color: #202020;"
       last.style = "";
@@ -188,16 +188,16 @@ function setup() {
         colorInput.disabled = true;
         // colorInput.readOnly = true;
       }
-      else{
+      else {
         colorInput.disabled = false;
         console.log('enable')
         // colorInput.readOnly = false;
       }
-      
+
       setColor(colorInput.value);
       viewSlider()
       drop_value();
-      lastMode = view_mods[index+1]
+      lastMode = view_mods[index + 1]
       timer = setInterval(() => {
         lastMode();
         view_leds();
@@ -207,7 +207,7 @@ function setup() {
   }
 
   sendButton = document.getElementById("send-mode")
-  sendButton.addEventListener('click', ()=>{
+  sendButton.addEventListener('click', () => {
     console.log("send")
     console.log(lastMode)
     console.log(view_mods.indexOf(lastMode))
@@ -216,7 +216,7 @@ function setup() {
   })
   colorInput = document.getElementById("color");
   brightnesSlider = document.getElementById("brightnes");
-  
+
   dropColor = document.getElementById('drop-color');
   var mods_div = document.querySelector(".mods");
 
@@ -228,35 +228,6 @@ function setup() {
   var btnScrollUp = document.getElementById("up");
   var btnScrollDown = document.getElementById("down");
 
-  document.getElementById('rangeValue').addEventListener('input', (e) => {
-    set_delay(e.target.value)
-  })
-
-  document.getElementById('delay').addEventListener('input', (e) => {
-    set_delay(e.target.value)
-  })
-
-  document.getElementById('to-start').addEventListener('click', (e) => {
-    clearTimeout(timer);
-    lastMode = actual_to_start;
-    timer = setInterval(() => {
-      actual_to_start();
-      view_leds();
-    }, document.getElementById('delay').value, view);
-    set_mode(40);
-    send_mode();
-  })
-  document.getElementById('to-end').addEventListener('click', (e) => {
-    clearTimeout(timer);
-    lastMode = actual_to_end;
-    timer = setInterval(() => {
-      actual_to_end();
-      view_leds();
-    }, document.getElementById('delay').value, view);
-    set_mode(39);
-    send_mode();
-  })
-
   document.getElementById('next').addEventListener('click', (e) => {
     clearTimeout(timer);
     var numMode = (view_mods.indexOf(lastMode) + 1) % view_mods.length;
@@ -267,7 +238,7 @@ function setup() {
       console.log('disable')
       // colorInput.readOnly = true;
     }
-    else{
+    else {
       colorInput.disabled = false;
       console.log('enable')
       // colorInput.readOnly = false;
@@ -283,13 +254,13 @@ function setup() {
     try {
       last.style = "";
     } catch (error) {
-      
+
     }
-    
-    if (numMode != 0){
-      last = document.querySelectorAll(".modButton")[numMode-1];
+
+    if (numMode != 0) {
+      last = document.querySelectorAll(".modButton")[numMode - 1];
       console.log(last)
-      last.style="background-color: #202020;"
+      last.style = "background-color: #202020;"
     }
   })
 
@@ -303,12 +274,12 @@ function setup() {
       console.log('disable')
       // colorInput.readOnly = true;
     }
-    else{
+    else {
       colorInput.disabled = false;
       console.log('enable')
       // colorInput.readOnly = false;
     }
-    setColor(colorInput.value); 
+    setColor(colorInput.value);
     viewSlider()
     drop_value();
     timer = setInterval(() => {
@@ -318,15 +289,84 @@ function setup() {
     set_mode(numMode)
     try {
       last.style = "";
-    } catch (error) {
-      
-    }
-    
-    if (numMode != 0){
-      last = document.querySelectorAll(".modButton")[numMode-1];
+    } catch (error) {}
+    if (numMode != 0) {
+      last = document.querySelectorAll(".modButton")[numMode - 1];
       console.log(last)
-      last.style="background-color: #202020;"
+      last.style = "background-color: #202020;"
     }
+  })
+
+  document.getElementById('to-start').addEventListener('click', (e) => {
+    clearTimeout(timer);
+    lastMode = actual_to_start;
+    timer = setInterval(() => {
+      actual_to_start();
+      view_leds();
+    }, document.getElementById('delay').value, view);
+    set_mode(40);
+    send_mode();
+  })
+
+  document.getElementById('to-end').addEventListener('click', (e) => {
+    clearTimeout(timer);
+    lastMode = actual_to_end;
+    timer = setInterval(() => {
+      actual_to_end();
+      view_leds();
+    }, document.getElementById('delay').value, view);
+    set_mode(39);
+    send_mode();
+  })
+
+  btnDW.addEventListener('click', () => {
+    btnDW.innerHTML = displayWork[(dw = !dw) ? 1 : 0]
+    if (!dw) {
+      clearTimeout(timer);
+      setColor('#ffffff00');
+      one_color_all_code();
+      view_leds();
+      set_mode(41);
+      send_mode();
+      set_mode(view_mods.indexOf(lastMode));
+      sendButton.disabled = true;
+      sendButton.style = 'background-color: #46464630; color: #ffffff30'
+    } else {
+      send_mode()
+      drop_value();
+      setColor(colorInput.value)
+      timer = setInterval(() => {
+        lastMode();
+        view_leds();
+      }, document.getElementById('delay').value, view)
+      sendButton.disabled = false;
+      sendButton.style = ''
+    }
+  })
+
+  btnSM.addEventListener('click', () => {
+    btnSM.innerHTML = statusMode[(sm = !sm) ? 1 : 0]
+    if (!sm) {
+      set_mode(0);
+      send_mode();
+      set_mode(view_mods.indexOf(lastMode));
+      clearTimeout(timer);
+    } else {
+      send_mode();
+      timer = setInterval(() => {
+        lastMode();
+        console.log(timer);
+        view_leds();
+      }, document.getElementById('delay').value, view)
+    }
+  })
+
+  document.getElementById('rangeValue').addEventListener('input', (e) => {
+    set_delay(e.target.value)
+  })
+
+  document.getElementById('delay').addEventListener('input', (e) => {
+    set_delay(e.target.value)
   })
 
   colorInput.value = '#ff0000'
@@ -358,44 +398,6 @@ function setup() {
       behavior: "smooth"
     });
   });
-
-  btnDW.addEventListener('click', () => {
-    btnDW.innerHTML = displayWork[(dw = !dw) ? 1 : 0]
-    if (!dw) {
-      clearTimeout(timer);
-      setColor('#ffffff00');
-      one_color_all_code();
-      view_leds();
-      sendButton.disabled = true;
-      sendButton.style = 'background-color: #46464630; color: #ffffff30'
-
-    } else {
-      drop_value();
-      setColor(colorInput.value)
-      timer = setInterval(() => {
-        lastMode();
-        view_leds();
-      }, document.getElementById('delay').value, view)
-      sendButton.disabled = false;
-      sendButton.style = ''
-    }
-  })
-
-  btnSM.addEventListener('click', () => {
-    btnSM.innerHTML = statusMode[(sm = !sm) ? 1 : 0]
-    if (!sm) {
-      set_mode(0);
-      send_mode();
-      clearTimeout(timer);
-    } else {
-      set_mode(view_mods.indexOf(lastMode));
-      send_mode();
-      timer = setInterval(() => {
-        lastMode();
-        view_leds();
-      }, document.getElementById('delay').value, view)
-    }
-  })
 
 
   document.getElementById('delay').addEventListener('input', (e) => {

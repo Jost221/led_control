@@ -17,13 +17,6 @@ static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
     base_variables::Controller::new("/dev/ttyUSB0".to_string(), 9_600)
 });
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-// #[tauri::command]
-// fn greet(name: &str) -> String {
-//     format!("Hello, {}! You've been greeted from Rust!", name)
-// }
-
-
 #[tauri::command]
 fn set_mode(mode_index: i16) {
     println!("{}", mode_index);
@@ -75,30 +68,9 @@ fn send_mode(){
 }
 
 fn main() {
-    println!("Start");
-
-    set_port("COM11");
-    let start_time = Instant::now();
-    let duration = Duration::from_secs(1);
-
-    loop {
-        if Instant::now() - start_time >= duration {
-            println!("Timer expired!");
-            break;
-        }
-    }
-    set_mode(31);
-    set_color("#ffff00");
-    send_mode();
-    set_brightnes(255);
-
-    // loop {
-    //     unsafe {
-    //         print!("{}", String::from_utf8(CONTROLLER.read()).unwrap());
-    //     }
-    // }
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![set_mode, set_color, set_brightnes, set_port, get_ports, send_mode, set_delay])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
+
 }

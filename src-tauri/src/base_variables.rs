@@ -5,7 +5,6 @@
 // brightness: 2
 //
 
-use serde_json::de;
 use serialport;
 use String;
 
