@@ -554,7 +554,7 @@ function hexToRgb(hex) {
     } : null;
 }
 
-function my_map(value, min, max, min_res, max_res) {
+export function my_map(value, min, max, min_res, max_res) {
     return (((max_res - min_res) / (max - min)) * (value - min)) + min_res;
 }
 
