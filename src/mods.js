@@ -59,6 +59,10 @@ export function drop_value() {
     len = 0;
 }
 
+export async function off() {
+    one_color_all(0,0,0,0);
+}
+
 export async function rainbow() {
     for (let i = 0; i < NUM_LEDS; i++)
         leds[i] = CHSV(counter + i * 2, 100, 50);
@@ -74,6 +78,7 @@ export async function transfusion() {
 export async function rainbowSlider() {
     leds[index] = CHSV(counter + index * 4, 100, 50);
     PlusIndex();
+    console.log(index)
     if (index == leds.length - 1) counter += 40;
 }
 
@@ -357,9 +362,10 @@ export async function runWorm() {
 }
 
 export async function smallFastSinusTrain() {
-    for (let i = 0; i < NUM_LEDS; i++)
-      var modif = Math.floor(Math.sin(my_map((counter += 26)%255, 0, 255, 0.0, 3.14)) * 255);
-      leds[i] = code(color+VALtoHEX(modif));
+    for (let i = 0; i < NUM_LEDS; i++){
+        var modif = Math.floor(Math.sin(my_map((counter += 26)%255, 0, 255, 0.0, 3.14)) * 255);
+        leds[i] = code(color+VALtoHEX(modif));
+    }
 }
 
 export async function lotsOfRedDots() {
@@ -561,9 +567,4 @@ export function my_map(value, min, max, min_res, max_res) {
 function VALtoHEX(val) {
     var val = val.toString(16);
     return val.length > 1 ? val : '0' + val;
-}
-
-function delay(delTime) {
-    var time = (new Date()).getTime();
-    while (time + delTime > (new Date()).getTime());
 }

@@ -1,5 +1,5 @@
 import {
-    view_leds, rainbow, transfusion, rainbowSlider, rainbowTrain,
+    view_leds, rainbow, transfusion, rainbowSlider, rainbowTrain, off,
     verticalRainbow, redToRainbow, reversRainbowWave, lotsOfRainbowDots,
     randomizer, runRedBlue, runRedBlueTrace, russia, randomPop, policeLight,
     rgb_sectors, fier, pulseColor, white_temps, drop_value, whiteFlashesOnWhite,
@@ -80,14 +80,26 @@ function viewSlider() {
     styleColor.innerHTML += `#brightnes::-moz-range-thumb { background-color: ${colorInput.value + Number(brightnesSlider.value).toString(16)}; }\n`;
 }
 
-let mods_div, view, colorInput, brightnesSlider, btnDW, btnSM, btnScrollUp;
+let mods_div, view, colorInput, brightnesSlider, btnScrollUp;
 let btnScrollDown, info, last, buttons, timer, lastMode, styleColor, leds_container;
+const OF = ['ON', 'OFF'];
+const SC = ['CONT', 'STOP'];
+
 
 window.addEventListener("DOMContentLoaded", () => {
     initVariables();
     viewSlider();
     createButton();
     SetingsEvent();
+    rightPanelEvent();
+    viewPortList();
+    topControlButton();
+    additionalButtons();
+    leftRight();
+
+    document.getElementById('send-mode').addEventListener("click", () => {
+        set_mode(view_mods.indexOf(lastMode));
+    });
 });
 
 function initVariables() {
@@ -95,8 +107,6 @@ function initVariables() {
     view = document.querySelector('.view');
     colorInput = document.getElementById("color");
     brightnesSlider = document.getElementById("brightnes");
-    btnDW = document.getElementById("DW");
-    btnSM = document.getElementById("SM");
     btnScrollUp = document.getElementById("up");
     btnScrollDown = document.getElementById("down");
     info = document.querySelector('#about-mode');
@@ -112,41 +122,43 @@ function createButton() {
         btn.className = 'modButton'
 
         btn.addEventListener("click", (e) => {
-            EventOnClick(e.target, index, view_mods[index]);
+            EventOnClick(e.target, view_mods[index], index);
         })
         mods_div.appendChild(btn);
     }
-    buttons = mods_comment.children;
+    buttons = [...document.querySelectorAll('.modButton')];
 }
 
-function EventOnClick(button, index, func) {
+function EventOnClick(button, func, index) {
     try {
         last.style = "";
-    } catch (error) {}
+    } catch (error) { }
     button.style = "background-color: #202020;"
     last = button;
-    info.children[0].innerHTML = button.innerHTML;
-    info.children[1].innerHTML = mods_comment[index];
     clearTimeout(timer);
-    if (index < 17 && index != 1) {
-        colorInput.disabled = true;
-        colorInput.style = "opacity: 30%;"
-    } else {
-        colorInput.disabled = false;
-        colorInput.style = "opacity: 100%;"
+    if (index > -1) {
+        info.children[0].innerHTML = button.innerHTML;
+        info.children[1].innerHTML = mods_comment[index];
+        console.log(index);
+        if (index < 17 && index != 1) {
+            colorInput.disabled = true;
+            colorInput.style = "opacity: 30%;"
+        } else {
+            colorInput.disabled = false;
+            colorInput.style = "opacity: 100%;"
+        }
+        lastMode = func;
+        drop_value();
     }
     setColor(colorInput.value);
-    // viewSlider()
-    drop_value();
-    lastMode = func;
     timer = setInterval(() => {
-        leds_container.style = `opacity: ${brightnesSlider.value/2.55}%;`;
-        lastMode();
+        leds_container.style = `opacity: ${brightnesSlider.value / 2.55}%;`;
+        func();
         view_leds();
-    }, document.getElementById('delay').value, view);
+    }, document.getElementById('rangeValue').value, view);
 }
 
-function SetingsEvent(){
+function SetingsEvent() {
     colorInput.addEventListener("input", () => {
         viewSlider();
         setColor(colorInput.value);
@@ -157,4 +169,119 @@ function SetingsEvent(){
         viewSlider()
         set_brightnes()
     });
+
+    function replaceDelay(e) {
+        set_delay(e.target.value);
+        clearTimeout(timer);
+        timer = setInterval(() => {
+            leds_container.style = `opacity: ${brightnesSlider.value / 2.55}%;`;
+            lastMode();
+            view_leds();
+        }, e.target.value, view);
+    }
+
+    document.getElementById('rangeValue').addEventListener('input', (e) => {
+        replaceDelay(e);
+    });
+
+    document.getElementById('delay').addEventListener('input', (e) => {
+        replaceDelay(e);
+    });
+}
+
+function rightPanelEvent() {
+    btnScrollDown.addEventListener('click', (e) => {
+        mods_div.scrollTo({
+            top: mods_div.scrollTop + 100,
+            behavior: "smooth"
+        });
+    });
+
+    btnScrollUp.addEventListener('click', (e) => {
+        mods_div.scrollTo({
+            top: mods_div.scrollTop - 100,
+            behavior: "smooth"
+        });
+    });
+}
+
+function viewPortList() {
+    let selects = document.getElementById('select-list');
+
+    selects.addEventListener('change', () => {
+        set_port(selects.value);
+    });
+
+    selects.addEventListener('click', () => {
+        get_ports().then(
+            result => {
+                selects.innerHTML = '';
+                selects.innerHTML += `<option>Выберете порт</option>`;
+                for (let i = 0; i < result.length; i++) {
+                    selects.innerHTML += `<option>${result[i]}</option>`;
+                }
+            },
+            error => {
+                alert("can`t view ports");
+            }
+        );
+    });
+}
+
+function topControlButton() {
+    function switchMode(next=false) {
+        var button, index, func;
+        if (next == true) {
+            index = (buttons.indexOf(last)+1)%buttons.length;
+        } else {
+            index = (buttons.indexOf(last)-1)%buttons.length;
+        }
+        button = buttons[index];
+        func = view_mods[index];
+        EventOnClick(button, func, index);
+    }
+
+    document.getElementById('next').addEventListener('click', (e) => {
+        switchMode(true);
+    })
+
+    document.getElementById('back').addEventListener('click', (e) => {
+        switchMode(false);
+    })
+}
+
+function additionalButtons() {
+    let sm = document.getElementById('SM');
+    let dw = document.getElementById('DW');
+    sm.addEventListener('click', () => {
+        if (sm.innerHTML == SC[0]){
+            sm.innerHTML = SC[1];
+            EventOnClick(last, lastMode);
+            dw.innerHTML = OF[1];
+        } else {
+            sm.innerHTML = SC[0];
+            EventOnClick(last, () => {}, -1);            
+        }
+    })
+
+    dw.addEventListener('click', ()=>{
+        if (dw.innerHTML == OF[0]){
+            dw.innerHTML = OF[1];
+            EventOnClick(last, lastMode, -1);
+            sm.innerHTML = SC[1];
+        } else {
+            dw.innerHTML = OF[0];
+            EventOnClick(last, off, -1);            
+        }
+    })
+}
+
+function leftRight() {
+    document.getElementById('to-start').addEventListener('click', () =>{
+        EventOnClick(last, actual_to_start, -1);
+    })
+
+    document.getElementById('to-end').addEventListener('click', () =>{
+        EventOnClick(last, actual_to_end, -1);
+    })
 }
