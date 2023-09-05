@@ -94,7 +94,6 @@ impl Controller{
 
     pub fn set_mode(&mut self, mode: u8){
         self.mode = mode;
-        self.send_mode();
     }
 
     pub fn set_color(&mut self, color: Color){

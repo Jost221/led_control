@@ -15,6 +15,9 @@ export async function set_mode(numMode) {
   
 }
 
+export async function send_mode() {
+  invoke("send_mode");
+}
 
 export async function set_color(color) {
   await invoke("set_color", { colorCode: color.toString(16) });

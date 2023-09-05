@@ -6,18 +6,19 @@ import {
     runRed, runRedTrain, flickerRed, setColor, pulseToRedColor, wormtToCenter,
     runRedLoop, bigSinus, jumpFromCenter, runRandomDote, longWorm, actual_to_start,
     actual_to_end, runWorm, smallFastSinusTrain, lotsOfRedDots, randomRed,
-    sinusTrain, doteToCenter, flickering, bouncingBalls, one_color_all_code, my_map,
+    sinusTrain, doteToCenter, flickering, bouncingBalls, one_color_all_code,
+    pause,
 } from './mods.js'
 
 
 import {
-    get_ports, set_port, set_mode, set_color, set_brightnes, set_delay
+    get_ports, set_port, set_mode, set_color, set_brightnes, set_delay, send_mode
 } from './ApiFn.js'
 
 const mods = [
     // rainbow
-    'Радуга', 'Статический цвет', 'Переливка', 'Радуга волнами', ' Бегущие цвета', 'Радуга волнами к центру',
-    'Красный-радуга', 'Обратная радуга', 'Радуга с промежутком',
+    'Радуга', 'Статический цвет', 'Переливка', 'Радуга волнами', ' Бегущие цвета',
+    'Радуга волнами к центру', 'Красный-радуга', 'Обратная радуга', 'Радуга с промежутком',
     // anather_colors
     'Слйчайные цвета', 'Бегуший С/К', 'Вращабщийся С/К', 'Бегущий патриотизм',
     'Случайные мерцания', 'Полицейские мигалки', 'РГБ по кругу', 'Огонь',
@@ -71,7 +72,6 @@ const view_mods = [rainbow, one_color_all_code, transfusion, rainbowSlider, rain
     jumpFromCenter, runRandomDote, longWorm, runWorm, smallFastSinusTrain,
     lotsOfRedDots, randomRed, sinusTrain, doteToCenter, flickering, bouncingBalls
 ]
-
 function viewSlider() {
     // styleColor.innerHTML = `#color::-webkit-sli  der-thumb { background-color: hsl(${colorSlider.value}, 100%, 50%); }\n`;
     // styleColor.innerHTML += `#color::-moz-range-thumb { background-color: hsl(${colorSlider.value}, 100%, 50%); }\n`;
@@ -84,6 +84,9 @@ let mods_div, view, colorInput, brightnesSlider, btnScrollUp;
 let btnScrollDown, info, last, buttons, timer, lastMode, styleColor, leds_container;
 const OF = ['ON', 'OFF'];
 const SC = ['CONT', 'STOP'];
+
+let flag = true;
+let lastProtName;
 
 
 window.addEventListener("DOMContentLoaded", () => {
@@ -99,6 +102,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
     document.getElementById('send-mode').addEventListener("click", () => {
         set_mode(view_mods.indexOf(lastMode));
+        send_mode()
     });
 });
 
@@ -139,7 +143,6 @@ function EventOnClick(button, func, index) {
     if (index > -1) {
         info.children[0].innerHTML = button.innerHTML;
         info.children[1].innerHTML = mods_comment[index];
-        console.log(index);
         if (index < 17 && index != 1) {
             colorInput.disabled = true;
             colorInput.style = "opacity: 30%;"
@@ -149,8 +152,13 @@ function EventOnClick(button, func, index) {
         }
         lastMode = func;
         drop_value();
+    } else {
+        set_mode(additional_modes(func));
+        send_mode();
+        set_mode(view_mods.indexOf(lastMode));
     }
     setColor(colorInput.value);
+    set_color(colorInput.value);
     timer = setInterval(() => {
         leds_container.style = `opacity: ${brightnesSlider.value / 2.55}%;`;
         func();
@@ -167,7 +175,7 @@ function SetingsEvent() {
 
     brightnesSlider.addEventListener("input", () => {
         viewSlider()
-        set_brightnes()
+        set_brightnes(brightnesSlider.value)
     });
 
     function replaceDelay(e) {
@@ -210,21 +218,27 @@ function viewPortList() {
 
     selects.addEventListener('change', () => {
         set_port(selects.value);
+        flag = flase;
+        lastProtName = selects.value;
     });
 
     selects.addEventListener('click', () => {
-        get_ports().then(
-            result => {
-                selects.innerHTML = '';
-                selects.innerHTML += `<option>Выберете порт</option>`;
-                for (let i = 0; i < result.length; i++) {
-                    selects.innerHTML += `<option>${result[i]}</option>`;
+        if (flag) {
+            get_ports().then(
+                result => {
+                    selects.innerHTML = '';
+                    selects.innerHTML += `<option>Выберете порт</option>`;
+                    for (let i = 0; i < result.length; i++) {
+                        selects.innerHTML += `<option>${result[i]}</option>`;
+                    }
+                    return
+                },
+                error => {
+                    alert("can`t view ports");
                 }
-            },
-            error => {
-                alert("can`t view ports");
-            }
-        );
+            );
+        }
+        flag = true;
     });
 }
 
@@ -260,7 +274,7 @@ function additionalButtons() {
             dw.innerHTML = OF[1];
         } else {
             sm.innerHTML = SC[0];
-            EventOnClick(last, () => {}, -1);            
+            EventOnClick(last, pause, -1);            
         }
     })
 
@@ -284,4 +298,17 @@ function leftRight() {
     document.getElementById('to-end').addEventListener('click', () =>{
         EventOnClick(last, actual_to_end, -1);
     })
+}
+
+function additional_modes(func) {
+    switch (func) {
+        case actual_to_end:
+            return 38;
+        case actual_to_start:
+            return 39;
+        case pause:
+            return 40;
+        case off:
+            return 41;
+    }
 }

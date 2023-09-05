@@ -59,6 +59,8 @@ export function drop_value() {
     len = 0;
 }
 
+export async function pause(){}
+
 export async function off() {
     one_color_all(0,0,0,0);
 }
@@ -78,7 +80,7 @@ export async function transfusion() {
 export async function rainbowSlider() {
     leds[index] = CHSV(counter + index * 4, 100, 50);
     PlusIndex();
-    console.log(index)
+
     if (index == leds.length - 1) counter += 40;
 }
 
@@ -169,7 +171,6 @@ export async function policeLight() {
     } else if (step == 1) {
         for (let i = NUM_LEDS / 2; i < NUM_LEDS; i++) leds[i] = rgb(0, 0, 255);
     }
-    console.log(leds)
 }
 
 export async function rgb_sectors() {
@@ -177,7 +178,6 @@ export async function rgb_sectors() {
     leds[GFT(index)] = rgb(0, 255, 0);
     leds[GST(index)] = rgb(0, 0, 255);
     PlusIndex();
-    console.log(leds)
 }
 
 export async function fier() {
@@ -290,7 +290,6 @@ export async function pulseToRedColor() {
 export async function wormtToCenter() {
     var temporary = counter;
     var temporary1 = counter;
-    console.log(((my_map(temporary1+=35, 0, 255, 0, 1)*255)/1).toString(16));
     var col = hexToRgb(color);
     for (let i = NUM_LEDS / 2; i >= 0; i--)
         leds[i] = code(color+((temporary+=35)%255).toString(16));
@@ -419,7 +418,6 @@ export async function bouncingBalls() {
     }
     for (let i = 0; i < BallCount; i++)
       leds[Position[i]] = code(color);
-    console.log(Position)
   }
 
 export async function one_color_all_code(){
@@ -442,9 +440,7 @@ export async function actual_to_start() {
 }
 
 export async function view_leds() {
-    // console.log(leds)
     for (let i = 0; i < NUM_LEDS; i++) {
-        // console.log(leds[i])
         switch (leds[i].type) {
             case 0:
                 leds_div[i].style = `background: ${leds[i].f};`;
@@ -460,7 +456,6 @@ export async function view_leds() {
                 break;
         }
     }
-    console.log('view')
 }
 
 function PlusIndex() {
