@@ -1,27 +1,11 @@
-//
-// ranges modivicartor
-// mode: 0
-// color: 1
-// brightness: 2
-//
-
 use serialport;
 use String;
 
-
-pub struct Color{
-    r: u8,
-    g: u8,
-    b: u8,
-}
+mod controllerSettings;
 
 pub struct Controller{
-    port_name: String,
     _port: Box<dyn serialport::SerialPort>,
-    mode: u8,
-    color: Color,
-    brightness: u8,
-    delay: u16
+    control: controllerSettings::Settings,
 }
 
 impl Controller{

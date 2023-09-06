@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-mod base_variables;
+mod controller;
 
 use once_cell::sync::Lazy;
 use serde_json::json;
@@ -9,13 +9,13 @@ use std::fs::File;
 use std::io::Write;
 
 #[cfg(target_os = "windows")]
-static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
-    base_variables::Controller::new("COM1".to_string(), 9_600)
+static mut CONTROLLER:  Lazy<controller::Controller> = Lazy::new(|| {
+    controller::Controller::new("COM1".to_string(), 9_600)
 });
 
 #[cfg(target_os = "linux")]
-static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
-    base_variables::Controller::new("/dev/ttyUSB0".to_string(), 9_600)
+static mut CONTROLLER:  Lazy<controller::Controller> = Lazy::new(|| {
+    controller::Controller::new("/dev/ttyUSB0".to_string(), 9_600)
 });
 
 #[tauri::command]
@@ -63,7 +63,7 @@ fn set_port(port_name: &str){
 
 #[tauri::command]
 fn get_ports() -> String{
-    let ports = base_variables::ports_names();
+    let ports = controller::ports_names();
     let json_ports = json!(ports).to_string();
     json_ports
 }
