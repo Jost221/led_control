@@ -5,7 +5,8 @@ mod base_variables;
 
 use once_cell::sync::Lazy;
 use serde_json::json;
-use std::time::{Duration, Instant};
+use std::fs::File;
+use std::io::Write;
 
 #[cfg(target_os = "windows")]
 static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
@@ -78,6 +79,13 @@ fn main() {
             set_delay, 
             send_mode
             ])
+        .on_window_event(|event| match event.event() {
+                tauri::WindowEvent::Destroyed => {
+                    let file = File::create("settings.data").unwrap();
+                    // file.write_all(CONTROLLER.)
+                }
+                 _ => {}
+               }) 
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 

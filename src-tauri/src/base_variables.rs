@@ -8,6 +8,7 @@
 use serialport;
 use String;
 
+
 pub struct Color{
     r: u8,
     g: u8,
@@ -39,6 +40,15 @@ impl Controller{
             brightness : u8::MAX,
             delay: 100
         }
+    }
+
+    pub fn exportData(&mut self) {
+        // vec![
+        //     self.mode,
+        //     self.brightness,
+        //     self.delay.,
+        //     self.port_name.to_string().as_str()
+        // ]
     }
 
     pub fn send_mode(&mut self){
