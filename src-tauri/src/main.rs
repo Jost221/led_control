@@ -1,5 +1,5 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
-#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+#![cfg_attr(not(debug_assertions), windows_subsystem = "linux")]
 
 mod controller;
 
@@ -20,45 +20,45 @@ static mut CONTROLLER:  Lazy<controller::Controller> = Lazy::new(|| {
 
 #[tauri::command]
 fn set_mode(mode_index: i16) {
-    println!("{}", mode_index);
-    unsafe{
-        CONTROLLER.set_mode(mode_index as u8);
-    }
+    // println!("{}", mode_index);
+    // unsafe{
+    //     CONTROLLER.set_mode(mode_index as u8);
+    // }
 }
 
 #[tauri::command]
 fn send_mode() {
-    unsafe{
-        CONTROLLER.send_mode();
-    }
+    // unsafe{
+    //     CONTROLLER.send_mode();
+    // }
 }
 
 #[tauri::command]
 fn set_color(color_code: &str){
-    unsafe{
-        CONTROLLER.set_code(color_code.to_string());
-    }
+    // unsafe{
+    //     CONTROLLER.set_code(color_code.to_string());
+    // }
 }
 
 #[tauri::command]
 fn set_delay(delay: u16){
-    unsafe{
-        CONTROLLER.set_delay(delay);
-    }
+    // unsafe{
+    //     CONTROLLER.set_delay(delay);
+    // }
 }
 
 #[tauri::command]
 fn set_brightnes(brightnes: u8){
-    unsafe{
-        CONTROLLER.set_brightnes(brightnes);
-    }
+    // unsafe{
+    //     CONTROLLER.set_brightnes(brightnes);
+    // }
 }
 
 #[tauri::command]
 fn set_port(port_name: &str){
-    unsafe{
-        CONTROLLER.set_port(port_name.to_string(), 9_600)
-    }
+    // unsafe{
+    //     CONTROLLER.set_port(port_name.to_string(), 9_600)
+    // }
 }
 
 #[tauri::command]
