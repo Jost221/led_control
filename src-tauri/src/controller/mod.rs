@@ -10,20 +10,20 @@ pub struct Controller{
 
 impl Controller{
     pub fn new(port_name: String, rate: u32) -> Controller{
-        Controller {
-            port_name: port_name.clone(),
-            _port : serialport::new(port_name, rate)
-                    .open()
-                    .expect("Failed to open port"),
-            mode : 2,
-            color : Color{
-                r : 0,
-                g : 0,
-                b : 0
-            },
-            brightness : u8::MAX,
-            delay: 100
-        }
+        // Controller {
+        //     port_name: port_name.clone(),
+        //     _port : serialport::new(port_name, rate)
+        //             .open()
+        //             .expect("Failed to open port"),
+        //     mode : 2,
+        //     color : Color{
+        //         r : 0,
+        //         g : 0,
+        //         b : 0
+        //     },
+        //     brightness : u8::MAX,
+        //     delay: 100
+        // }
     }
 
     pub fn exportData(&mut self) {
@@ -36,7 +36,7 @@ impl Controller{
     }
 
     pub fn send_mode(&mut self){
-        println!("mode = {:?}", [0 as u8, self.mode]);
+        // println!("mode = {:?}", [0 as u8, self.mode]);
         // return;
         self._port
             .write(&[0 as u8, self.mode])
