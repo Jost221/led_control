@@ -218,7 +218,7 @@ function viewPortList() {
 
     selects.addEventListener('change', () => {
         set_port(selects.value);
-        flag = flase;
+        flag = false;
         lastProtName = selects.value;
     });
 

@@ -5,8 +5,11 @@ export async function get_ports() {
 }
 
 export async function set_port(portName) {
-  await invoke("set_port", { portName: portName });
-  console.log('set port')
+  let result = await invoke("set_port", { portName: portName });
+  // result.then(
+  //   result => console.log('aboa'),
+  //   error => alert(error)
+  // )
 }
 
 export async function set_mode(numMode) {
@@ -24,7 +27,7 @@ export async function set_color(color) {
 }
 
 export async function set_brightnes(brightnes) {
-  await invoke("set_brightnes", { brightnes: Number(brightnes) });
+  await invoke("set_brightness", { brightness: Number(brightnes) });
 }
 
 export async function set_delay(delay) {
