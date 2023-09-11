@@ -6,7 +6,7 @@ mod controller;
 use once_cell::sync::Lazy;
 use serde_json::json;
 use std::fs::File;
-use std::io::Write;
+use std::io::{Write, Read};
 
 #[cfg(target_os = "windows")]
 static mut CONTROLLER:  Lazy<controller::Controller> = Lazy::new(|| {
@@ -75,6 +75,20 @@ fn get_ports() -> String{
 }
 
 fn main() {
+    match std::fs::File::open("settings.data") {
+        Ok(mut f) => {
+            let mut content = String::new();
+            match f.read_to_string(&mut content) {
+                Ok(_) => print!("aboaba"),
+                Err(_) => print!("pizdec eto bag navernoe ili dostupa snova net"),
+            }
+            unsafe {
+                CONTROLLER.import_json(content);
+            }
+        },
+        Err(e) => println!("{}", e),
+    };
+
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             set_mode, 

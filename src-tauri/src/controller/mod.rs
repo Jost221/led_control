@@ -1,11 +1,11 @@
 use serialport;
 use String;
 
-mod controllerSettings;
+mod controller_settings;
 
 pub struct Controller{
     _port: Box<dyn serialport::SerialPort>,
-    control: controllerSettings::Settings,
+    control: controller_settings::Settings,
 }
 
 impl Controller {
@@ -15,7 +15,7 @@ impl Controller {
                 Ok(v) => v,
                 Err(_) =>  return Err("Ошибка открытия стандартного порта. Проверьте уровень доступа программы".to_string()),
             },
-            control: controllerSettings::Settings::new(),
+            control: controller_settings::Settings::new(),
         };
         controller.control.port_name = port_name;
         Ok(controller)
@@ -26,6 +26,15 @@ impl Controller {
             Ok(v) => Ok(v),
             Err(_) => Err("Error get data".to_string())
         }
+    }
+    pub fn import_json(&mut self, data: String) {
+        self.control = match serde_json::from_str(data) {
+            Ok(v) => v,
+            Err(_) => {
+                println!("AAAAAAAAAAAAAAAAAA");
+                
+            }
+        };
     }
 
     fn send(&mut self, station: u8, mut data: Vec<u8>) -> Result<(), String>{

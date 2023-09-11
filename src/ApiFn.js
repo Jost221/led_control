@@ -5,31 +5,49 @@ export async function get_ports() {
 }
 
 export async function set_port(portName) {
-  let result = await invoke("set_port", { portName: portName });
-  // result.then(
-  //   result => console.log('aboa'),
-  //   error => alert(error)
-  // )
+  try {
+    await invoke("set_port", { portName: portName });
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export async function set_mode(numMode) {
-  console.log('set mode ' + numMode)
-  await invoke("set_mode", { modeIndex: Number(numMode) });
-  
+  try{
+    await invoke("set_mode", { modeIndex: Number(numMode) });
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export async function send_mode() {
-  invoke("send_mode");
+  try{
+    await invoke("send_mode");
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export async function set_color(color) {
-  await invoke("set_color", { colorCode: color.toString(16) });
+  try{
+    await invoke("set_color", { colorCode: color.toString(16) });
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export async function set_brightnes(brightnes) {
-  await invoke("set_brightness", { brightness: Number(brightnes) });
+  try{
+    await invoke("set_brightness", { brightness: Number(brightnes) });
+  } catch (error) {
+    alert(error)
+  }
 }
 
 export async function set_delay(delay) {
-  await invoke("set_delay", { delay: Number(delay) })
+  try{
+    await invoke("set_delay", { delay: Number(delay) })
+  } catch (error) {
+    alert(error)
+  }
 }
