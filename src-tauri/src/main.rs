@@ -74,8 +74,15 @@ fn get_ports() -> String{
     json_ports
 }
 
+#[tauri::command]
+fn get_data() -> String {
+    unsafe{
+        CONTROLLER.export_json()
+    }
+}
+
 fn main() {
-    match std::fs::File::open("settings.data") {
+    match File::open("settings.data") {
         Ok(mut f) => {
             let mut content = String::new();
             match f.read_to_string(&mut content) {
@@ -97,11 +104,24 @@ fn main() {
             set_port, 
             get_ports, 
             set_delay, 
-            send_mode
+            send_mode,
+            get_data
             ])
         .on_window_event(|event| match event.event() {
                 tauri::WindowEvent::Destroyed => {
-                    let file = File::create("settings.data").unwrap();
+                    match File::create("settings.data") {
+                       Ok(mut f) => {
+                        let mut buf: String;
+                        unsafe {
+                            buf = CONTROLLER.export_json();
+                        }
+                        match f.write_all(buf.as_bytes()) {
+                            Ok(()) => println!("all write"),
+                            Err(_) => println!("error write to file"),
+                        };
+                       }
+                       Err(_) => println!("Настройки не сохранены. Рекомендуется проверить права на создаие файла"),
+                    };
                     // file.write_all(CONTROLLER.)
                 }
                  _ => {}

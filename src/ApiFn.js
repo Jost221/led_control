@@ -51,3 +51,7 @@ export async function set_delay(delay) {
     alert(error)
   }
 }
+
+export async function get_data(){
+  return await invoke("get_data");
+}

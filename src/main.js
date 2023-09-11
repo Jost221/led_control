@@ -12,7 +12,7 @@ import {
 
 
 import {
-    get_ports, set_port, set_mode, set_color, set_brightnes, set_delay, send_mode
+    get_ports, set_port, set_mode, set_color, set_brightnes, set_delay, send_mode, get_data
 } from './ApiFn.js'
 
 const mods = [
@@ -82,6 +82,7 @@ function viewSlider() {
 
 let mods_div, view, colorInput, brightnesSlider, btnScrollUp;
 let btnScrollDown, info, last, buttons, timer, lastMode, styleColor, leds_container;
+let delay;
 const OF = ['ON', 'OFF'];
 const SC = ['CONT', 'STOP'];
 
@@ -99,6 +100,7 @@ window.addEventListener("DOMContentLoaded", () => {
     topControlButton();
     additionalButtons();
     leftRight();
+    get_data();
 
     document.getElementById('send-mode').addEventListener("click", () => {
         set_mode(view_mods.indexOf(lastMode));
@@ -187,11 +189,10 @@ function SetingsEvent() {
             view_leds();
         }, e.target.value, view);
     }
-
-    document.getElementById('rangeValue').addEventListener('input', (e) => {
+    delay = document.getElementById('rangeValue')
+    delay.addEventListener('input', (e) => {
         replaceDelay(e);
     });
-
     document.getElementById('delay').addEventListener('input', (e) => {
         replaceDelay(e);
     });
@@ -311,4 +312,24 @@ function additional_modes(func) {
         case off:
             return 41;
     }
+}
+
+function set_data() {
+    try {
+        let data = get_data();
+        data.then(
+            result => {
+                result = JSON.parse(result);
+                selects.innerHTML = `<option>${result['port_name']}</option>`
+                delay.value = result['delay'];
+                
+            },
+            error => {
+                alert(error);
+            }
+        )
+    } catch {
+        alert("error get settings data");
+    }
+       
 }

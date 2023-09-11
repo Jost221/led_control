@@ -54,7 +54,7 @@ impl Settings {
     }
 
     #[cfg(target_os = "linux")]
-    pub fn new() {
+    pub fn new() -> Settings {
         Settings {
             port_name: "/dev/ttyUSB0".to_string(),
             mode: 0,
@@ -83,6 +83,4 @@ impl Settings {
             Err(e) => Err(e.to_string())
         }
     }
-
-    // pub fn 
 }

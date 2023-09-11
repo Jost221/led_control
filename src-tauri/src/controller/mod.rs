@@ -21,19 +21,19 @@ impl Controller {
         Ok(controller)
     }
 
-    pub fn export_json(&mut self) -> Result<String, String> {
+    pub fn export_json(&mut self) -> String {
         match serde_json::to_string(&self.control){
-            Ok(v) => Ok(v),
-            Err(_) => Err("Error get data".to_string())
+            Ok(v) => v,
+            Err(_) => {
+                println!("Error get data");
+                String::new()
+            },
         }
     }
     pub fn import_json(&mut self, data: String) {
-        self.control = match serde_json::from_str(data) {
-            Ok(v) => v,
-            Err(_) => {
-                println!("AAAAAAAAAAAAAAAAAA");
-                
-            }
+        match serde_json::from_str(&data) {
+            Ok(v) => self.control = v,
+            Err(_) => println!("the file contains incorrect information"),
         };
     }
 
