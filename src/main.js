@@ -82,7 +82,7 @@ function viewSlider() {
 
 let mods_div, view, colorInput, brightnesSlider, btnScrollUp;
 let btnScrollDown, info, last, buttons, timer, lastMode, styleColor, leds_container;
-let delay;
+let delay_i, delay_s, selects;
 const OF = ['ON', 'OFF'];
 const SC = ['CONT', 'STOP'];
 
@@ -100,7 +100,7 @@ window.addEventListener("DOMContentLoaded", () => {
     topControlButton();
     additionalButtons();
     leftRight();
-    get_data();
+    set_data();
 
     document.getElementById('send-mode').addEventListener("click", () => {
         set_mode(view_mods.indexOf(lastMode));
@@ -155,7 +155,10 @@ function EventOnClick(button, func, index) {
         lastMode = func;
         drop_value();
     } else {
-        set_mode(additional_modes(func));
+        let additional = additional_modes(func);
+        if(additional != undefined){
+            set_mode(additional);
+        }
         send_mode();
         set_mode(view_mods.indexOf(lastMode));
     }
@@ -165,7 +168,7 @@ function EventOnClick(button, func, index) {
         leds_container.style = `opacity: ${brightnesSlider.value / 2.55}%;`;
         func();
         view_leds();
-    }, document.getElementById('rangeValue').value, view);
+    }, delay_i.value, view);
 }
 
 function SetingsEvent() {
@@ -189,11 +192,12 @@ function SetingsEvent() {
             view_leds();
         }, e.target.value, view);
     }
-    delay = document.getElementById('rangeValue')
-    delay.addEventListener('input', (e) => {
+    delay_i = document.getElementById('rangeValue')
+    delay_i.addEventListener('input', (e) => {
         replaceDelay(e);
     });
-    document.getElementById('delay').addEventListener('input', (e) => {
+    delay_s = document.getElementById('delay')
+    delay_s.addEventListener('input', (e) => {
         replaceDelay(e);
     });
 }
@@ -215,7 +219,7 @@ function rightPanelEvent() {
 }
 
 function viewPortList() {
-    let selects = document.getElementById('select-list');
+    selects = document.getElementById('select-list');
 
     selects.addEventListener('change', () => {
         set_port(selects.value);
@@ -244,12 +248,12 @@ function viewPortList() {
 }
 
 function topControlButton() {
-    function switchMode(next=false) {
+    function switchMode(next = false) {
         var button, index, func;
         if (next == true) {
-            index = (buttons.indexOf(last)+1)%buttons.length;
+            index = (buttons.indexOf(last) + 1) % buttons.length;
         } else {
-            index = (buttons.indexOf(last)-1)%buttons.length;
+            index = (buttons.indexOf(last) - 1) % buttons.length;
         }
         button = buttons[index];
         func = view_mods[index];
@@ -269,34 +273,34 @@ function additionalButtons() {
     let sm = document.getElementById('SM');
     let dw = document.getElementById('DW');
     sm.addEventListener('click', () => {
-        if (sm.innerHTML == SC[0]){
+        if (sm.innerHTML == SC[0]) {
             sm.innerHTML = SC[1];
             EventOnClick(last, lastMode);
             dw.innerHTML = OF[1];
         } else {
             sm.innerHTML = SC[0];
-            EventOnClick(last, pause, -1);            
+            EventOnClick(last, pause, -1);
         }
     })
 
-    dw.addEventListener('click', ()=>{
-        if (dw.innerHTML == OF[0]){
+    dw.addEventListener('click', () => {
+        if (dw.innerHTML == OF[0]) {
             dw.innerHTML = OF[1];
             EventOnClick(last, lastMode, -1);
             sm.innerHTML = SC[1];
         } else {
             dw.innerHTML = OF[0];
-            EventOnClick(last, off, -1);            
+            EventOnClick(last, off, -1);
         }
     })
 }
 
 function leftRight() {
-    document.getElementById('to-start').addEventListener('click', () =>{
+    document.getElementById('to-start').addEventListener('click', () => {
         EventOnClick(last, actual_to_start, -1);
     })
 
-    document.getElementById('to-end').addEventListener('click', () =>{
+    document.getElementById('to-end').addEventListener('click', () => {
         EventOnClick(last, actual_to_end, -1);
     })
 }
@@ -320,16 +324,16 @@ function set_data() {
         data.then(
             result => {
                 result = JSON.parse(result);
-                selects.innerHTML = `<option>${result['port_name']}</option>`
-                delay.value = result['delay'];
-                
+                console.log(result)
+                selects.innerHTML = `<option>${result.port_name}</option>`
+                delay_i.value = result.delay;
+                delay_s.value = result.delay;
             },
             error => {
                 alert(error);
             }
         )
-    } catch {
-        alert("error get settings data");
+    } catch(error) {
+        alert(error);
     }
-       
 }

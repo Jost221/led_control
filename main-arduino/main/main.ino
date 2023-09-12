@@ -5,7 +5,7 @@ CRGB leds[NUM_LEDS];
 
 int delayTime = 50;
 
-int ledMode = 0;
+int ledMode = 1;
 int lastMode = 0;
 byte counter = 0;
 byte color[] = { 255, 255, 0 };

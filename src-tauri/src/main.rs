@@ -26,7 +26,6 @@ static mut CONTROLLER:  Lazy<controller::Controller> = Lazy::new(|| {
 
 #[tauri::command]
 fn set_mode(mode_index: i16) -> Result<(), String> {
-    // println!("{}", mode_index);
     unsafe{
         CONTROLLER.set_mode(mode_index as u8)
     }
@@ -75,27 +74,29 @@ fn get_ports() -> String{
 }
 
 #[tauri::command]
-fn get_data() -> String {
-    unsafe{
-        CONTROLLER.export_json()
-    }
-}
-
-fn main() {
+fn get_data() -> Result<String, String> {
     match File::open("settings.data") {
         Ok(mut f) => {
             let mut content = String::new();
             match f.read_to_string(&mut content) {
-                Ok(_) => print!("aboaba"),
+                Ok(_) => {},
                 Err(_) => print!("pizdec eto bag navernoe ili dostupa snova net"),
             }
             unsafe {
-                CONTROLLER.import_json(content);
+                match CONTROLLER.import_json(content) {
+                    Ok(()) => {},
+                    Err(e) => return Err(e)
+                }
             }
         },
         Err(e) => println!("{}", e),
     };
+    unsafe{
+        Ok(CONTROLLER.export_json())
+    }
+}
 
+fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![
             set_mode, 
@@ -105,13 +106,13 @@ fn main() {
             get_ports, 
             set_delay, 
             send_mode,
-            get_data
+            get_data,
             ])
         .on_window_event(|event| match event.event() {
                 tauri::WindowEvent::Destroyed => {
                     match File::create("settings.data") {
                        Ok(mut f) => {
-                        let mut buf: String;
+                        let buf: String;
                         unsafe {
                             buf = CONTROLLER.export_json();
                         }

@@ -28,12 +28,15 @@ impl Color {
         if code.len() > 7 {
             return Err("Ошибка преобразвания данных: длинна код цвета должна быть 7 символов (вкелючая '#')".to_string());
         }
-        let color = &code[1..];
+        let _color = &code[1..];
         let mut rgb = [0 as u8; 3];
         for i in 0..3 {
-            match u8::from_str_radix(&code[i*2..(i+1)*2], 16) {
+            match u8::from_str_radix(&_color[i*2..(i*2)+2], 16) {
                 Ok(v) => rgb[i] = v,
-                Err(_) => return Err("Ошибка преобразвания данных: длинна код цвета должна быть 7 символов (вкелючая '#')".to_string())
+                Err(e) => {
+                    println!("e = {} index = {} nextindex = {}, {}", e, i*2, (i*2)+2, _color);
+                    return Err("Ошибка преобразвания данных: длинна код цвета должна быть 7 символов (вкелючая '#')".to_string())
+                }
             };
         }
         self.set_rgb(rgb[0], rgb[1], rgb[2]);
@@ -70,11 +73,6 @@ impl Settings {
         }
         self.mode = mode;
         Ok(self)
-    }
-
-    pub fn set_color_rgb(&mut self, r: u8, g: u8, b: u8) -> &mut Settings {
-        self.color.set_rgb(r, g, b);
-        self
     }
 
     pub fn set_color_code(&mut self, code: String) -> Result<&mut Settings, String> {

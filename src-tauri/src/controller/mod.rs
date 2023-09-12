@@ -1,5 +1,7 @@
 use serialport;
 use String;
+use std::thread;
+use std::time::Duration;
 
 mod controller_settings;
 
@@ -30,17 +32,21 @@ impl Controller {
             },
         }
     }
-    pub fn import_json(&mut self, data: String) {
+    pub fn import_json(&mut self, data: String) -> Result<(), String> {
         match serde_json::from_str(&data) {
-            Ok(v) => self.control = v,
-            Err(_) => println!("the file contains incorrect information"),
+            Ok(v) => {
+                self.control = v;
+                return self.switch_port(self.control.port_name.to_string(), 9_600);
+            },
+            Err(_) => return Err("the file contains incorrect information".to_string()),
         };
     }
 
     fn send(&mut self, station: u8, mut data: Vec<u8>) -> Result<(), String>{
         data.insert(0, station);
+        println!("{:?}", &data[..]);
         match self._port.write(&data[..]) {
-            Ok(v) => Ok(()),
+            Ok(_) => Ok(()),
             Err(_) =>Err("Ошибка отправки данных в порт. Проверьте уровень доступа программы".to_string()),
         }
     }
@@ -64,14 +70,14 @@ impl Controller {
 
     pub fn set_mode(&mut self, mode: u8) -> Result<(), String>{
         match self.control.set_mode(mode) {
-            Ok(v) => Ok(()),
-            Err(v) => Err(v.to_string())
+            Ok(_) => Ok(()),
+            Err(e) => Err(e.to_string())
         }
     }
 
     pub fn set_color(&mut self, code: String) -> Result<(), String> {
         match self.control.set_color_code(code) {
-            Ok(v) => self.send_color(),
+            Ok(_) => self.send_color(),
             Err(e) => return Err(e.to_string()),
         }
     }
@@ -87,10 +93,27 @@ impl Controller {
     }
     
     pub fn switch_port(&mut self, port_name: String, rate: u32) -> Result<(), String> {
+        match self._port.name() {
+            Some(v) => {
+                if v == port_name {
+                    return Ok(());
+                } else {
+                    self.control.port_name = port_name.to_string();
+                }
+            }
+            _ => {},        
+        }
         self._port = match serialport::new(port_name, rate).open() {
             Ok(v) => v,
             Err(_) => return Err("Ошибка открытия стандартного порта. Проверьте уровень доступа программы".to_string()),
         };
+        self.send_delay()?;
+        thread::sleep(Duration::from_millis(200));
+        self.send_brightnes()?;
+        thread::sleep(Duration::from_millis(200));
+        self.send_color()?;
+        thread::sleep(Duration::from_millis(200));
+        self.send_mode()?;
         Ok(())
     }
 }
