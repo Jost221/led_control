@@ -156,7 +156,7 @@ function EventOnClick(button, func, index) {
         drop_value();
     } else {
         let additional = additional_modes(func);
-        if(additional != undefined){
+        if (additional != undefined) {
             set_mode(additional);
         }
         send_mode();
@@ -328,12 +328,25 @@ function set_data() {
                 selects.innerHTML = `<option>${result.port_name}</option>`
                 delay_i.value = result.delay;
                 delay_s.value = result.delay;
+                colorInput.value = to_rgb(result.color.r, result.color.g, result.color.b);
+                brightnesSlider.value = result.brightnes;
+                viewSlider();
+                EventOnClick(buttons[result.mode], view_mods[result.mode], result.mode);
             },
             error => {
                 alert(error);
             }
         )
-    } catch(error) {
+    } catch (error) {
         alert(error);
     }
+}
+
+function convert(integer) {
+    var str = Number(integer).toString(16);
+    return str.length == 1 ? "0" + str : str;
+};
+
+function to_rgb(r, g, b) { 
+    return "#" + convert(r) + convert(g) + convert(b);
 }
