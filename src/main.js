@@ -324,12 +324,11 @@ function set_data() {
         data.then(
             result => {
                 result = JSON.parse(result);
-                console.log(result)
                 selects.innerHTML = `<option>${result.port_name}</option>`
                 delay_i.value = result.delay;
                 delay_s.value = result.delay;
                 colorInput.value = to_rgb(result.color.r, result.color.g, result.color.b);
-                brightnesSlider.value = result.brightnes;
+                brightnesSlider.value = result.brightness;
                 viewSlider();
                 EventOnClick(buttons[result.mode], view_mods[result.mode], result.mode);
             },

@@ -44,7 +44,6 @@ impl Controller {
 
     fn send(&mut self, station: u8, mut data: Vec<u8>) -> Result<(), String>{
         data.insert(0, station);
-        println!("{:?}", &data[..]);
         match self._port.write(&data[..]) {
             Ok(_) => Ok(()),
             Err(_) =>Err("Ошибка отправки данных в порт. Проверьте уровень доступа программы".to_string()),

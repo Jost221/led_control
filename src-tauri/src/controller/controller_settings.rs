@@ -33,10 +33,7 @@ impl Color {
         for i in 0..3 {
             match u8::from_str_radix(&_color[i*2..(i*2)+2], 16) {
                 Ok(v) => rgb[i] = v,
-                Err(e) => {
-                    println!("e = {} index = {} nextindex = {}, {}", e, i*2, (i*2)+2, _color);
-                    return Err("Ошибка преобразвания данных: длинна код цвета должна быть 7 символов (вкелючая '#')".to_string())
-                }
+                Err(_) => return Err("Ошибка преобразвания данных: цвет должен быть указан в формате HEX".to_string())
             };
         }
         self.set_rgb(rgb[0], rgb[1], rgb[2]);

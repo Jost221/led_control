@@ -80,13 +80,10 @@ fn get_data() -> Result<String, String> {
             let mut content = String::new();
             match f.read_to_string(&mut content) {
                 Ok(_) => {},
-                Err(_) => print!("pizdec eto bag navernoe ili dostupa snova net"),
+                Err(_) => print!("eto bag navernoe ili dostupa snova net"),
             }
             unsafe {
-                match CONTROLLER.import_json(content) {
-                    Ok(()) => {},
-                    Err(e) => return Err(e)
-                }
+                CONTROLLER.import_json(content)?
             }
         },
         Err(e) => println!("{}", e),
