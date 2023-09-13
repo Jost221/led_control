@@ -1,14 +1,16 @@
 #define NUM_LEDS 60
 #include "FastLED.h"
-#define PIN 2
 CRGB leds[NUM_LEDS];
 
-int delayTime = 50;
+#define PIN 2                         // Пин подключения ленты
+int delayTime = 50;                   // Время задержки
+int ledMode = 1;                      // Режим работы
+byte color[] = { 255, 255,255 };       // Цвет в RGB
+const int BallCount = 3;              // Количество мячиков
 
-int ledMode = 1;
+
 int lastMode = 0;
 byte counter = 0;
-byte color[] = { 255, 255, 0 };
 bool direction = 0;
 byte mode = 0;
 byte index = 0;
@@ -19,7 +21,6 @@ byte crafty = 0;
 // for bouncing balls
 float Gravity = -9.81;
 int StartHeight = 1;
-const int BallCount = 3;
 
 float Height[BallCount];
 float ImpactVelocityStart = sqrt(-2 * Gravity * StartHeight);
