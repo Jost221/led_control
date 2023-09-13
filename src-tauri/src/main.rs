@@ -26,13 +26,6 @@ fn set_mode(mode_index: i16) {
 }
 
 #[tauri::command]
-fn send_mode() {
-    unsafe{
-        CONTROLLER.send_mode();
-    }
-}
-
-#[tauri::command]
 fn set_color(color_code: &str){
     unsafe{
         CONTROLLER.set_code(color_code.to_string());
@@ -67,17 +60,16 @@ fn get_ports() -> String{
     json_ports
 }
 
+#[tauri::command]
+fn send_mode(){
+    unsafe{
+        CONTROLLER.send_mode();
+    }
+}
+
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![
-            set_mode, 
-            set_color, 
-            set_brightnes, 
-            set_port, 
-            get_ports, 
-            set_delay, 
-            send_mode
-            ])
+        .invoke_handler(tauri::generate_handler![set_mode, set_color, set_brightnes, set_port, get_ports, send_mode, set_delay])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 
