@@ -1,14 +1,17 @@
-#define NUM_LEDS 60
 #include "FastLED.h"
-#define PIN 2
+
+#define NUM_LEDS 20
+#define PIN 13
 CRGB leds[NUM_LEDS];
 
+// settings variable
 int delayTime = 50;
+int ledMode = 1;
 
-int ledMode = 27;
+
 int lastMode = 0;
 byte counter = 0;
-byte color[] = { 255, 255, 0 };
+byte color[] = { 255, 255, 255 };
 bool direction = 0;
 byte mode = 0;
 byte index = 0;
@@ -30,11 +33,11 @@ long ClockTimeSinceLastBounce[BallCount];
 float Dampening[BallCount];
 
 void setup() {
-  FastLED.addLeds<WS2811, PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<WS2812, PIN, GRB>(leds, NUM_LEDS).setCorrection(TypicalLEDStrip);
   FastLED.setBrightness(255);
   one_color_all(0, 0, 0);
   FastLED.show();
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   for (int i = 0; i < BallCount; i++) {
     ClockTimeSinceLastBounce[i] = millis();
@@ -47,7 +50,6 @@ void setup() {
 }
 
 void serialEvent() {
-  delay(50);
   lastMode = 0;
   counter = 0;
   direction = 0;
@@ -56,21 +58,25 @@ void serialEvent() {
   step = 0;
   len = 0;
   crafty = 0;
+
   switch (Serial.read()) {
     case 0:
       ledMode = Serial.read();
-      // if (ledMode != 39 && ledMode != 40 && ledMode != 0 && ledMode != 41){
-      //   for(int i = 0; i < NUM_LEDS; i++)
-      //     leds[i].setRGB(0, 0, 0);
-      // }
+      //      if (Serial.read() == 1) {
+      //        for (int i = 0; i < 3; i++) {
+      //          color[i] = Serial.read();
+      //        }
+      //      }
+      //      if(Serial.read() == 2){
+      //        FastLED.setBrightness(Serial.read());
+      //      }
       break;
     case 1:
+
       for (int i = 0; i < 3; i++) {
         color[i] = Serial.read();
       }
-      while (Serial.available()) {
-        Serial.read();
-      }
+
       break;
     case 2:
       FastLED.setBrightness(Serial.read());
@@ -121,7 +127,6 @@ void loop() {
     case 36: doteToCenter(); break;
     case 37: flickering(); break;
     case 38: bouncingBalls(); break;  // снов лень, снова просто редачу
-
     case 39: actual_to_end(); break;
     case 40: actual_to_start(); break;
     case 41: one_color_all(0, 0, 0); break;

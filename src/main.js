@@ -11,18 +11,8 @@ import {
   sinusTrain, doteToCenter, flickering, bouncingBalls, one_color_all_code
 } from './mods.js'
 
-
-// let greetInputEl;
-// let greetMsgEl;
-
-// async function greet() {
-//   // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-//   greetMsgEl.textContent = await invoke("biba", { x: Number(greetInputEl.value)});
-// }
-
 async function get_ports() {
   var items = JSON.parse(await invoke("get_ports"));
-  console.log('updat port')
   selects.innerHTML = '';
   selects.innerHTML += `<option>Выберете порт</option>`
   for (let i = 0; i < items.length; i++) {
@@ -32,12 +22,10 @@ async function get_ports() {
 
 async function set_port() {
   await invoke("set_port", { portName: selects.value });
-  console.log('set port')
 }
 
 async function set_mode(numMode) {
   await invoke("set_mode", { modeIndex: Number(numMode) });
-  console.log('set mode ' + numMode)
 }
 
 async function send_mode() {
@@ -45,8 +33,8 @@ async function send_mode() {
 }
 
 async function set_color() {
-  console.log(colorInput.value)
   await invoke("set_color", { colorCode: colorInput.value })
+
 }
 
 async function set_brightnes() {
@@ -56,14 +44,6 @@ async function set_brightnes() {
 async function set_delay(value) {
   await invoke("set_delay", { delay: Number(value) })
 }
-// window.addEventListener("DOMContentLoaded", () => {
-//   greetInputEl = document.querySelector("#greet-input");
-//   greetMsgEl = document.querySelector("#greet-msg");
-//   document.querySelector("#greet-form").addEventListener("submit", (e) => {
-//     e.preventDefault();
-//     greet();
-//   });
-// });
 
 let colorInput;
 let brightnesSlider;
@@ -83,7 +63,7 @@ const displayWork = ['ON', 'OFF'];
 const statusMode = ['CONT', 'STOP'];
 let dw = 1;
 let sm = 1;
-let last = document.createElement('button'); // костыль, но иначе не работает
+let last = document.createElement('button');
 
 let timer;
 let lastMode;
@@ -152,8 +132,6 @@ const view_mods = [() => { }, rainbow, one_color_all_code, transfusion, rainbowS
 ]
 
 function viewSlider() {
-  // styleColor.innerHTML = `#color::-webkit-slider-thumb { background-color: hsl(${colorSlider.value}, 100%, 50%); }\n`;
-  // styleColor.innerHTML += `#color::-moz-range-thumb { background-color: hsl(${colorSlider.value}, 100%, 50%); }\n`;
   styleColor.innerHTML = `#brightnes{ background: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, ${colorInput.value} 100%); }\n`;
   styleColor.innerHTML += `#brightnes::-webkit-slider-thumb { background-color: ${colorInput.value + Number(brightnesSlider.value).toString(16)}; }\n`;
   styleColor.innerHTML += `#brightnes::-moz-range-thumb { background-color: ${colorInput.value + Number(brightnesSlider.value).toString(16)}; }\n`;
@@ -186,12 +164,9 @@ function setup() {
       if (index < 17 && index != 1) {
         colorInput.value = '#ffffff';
         colorInput.disabled = true;
-        // colorInput.readOnly = true;
       }
       else {
         colorInput.disabled = false;
-        console.log('enable')
-        // colorInput.readOnly = false;
       }
 
       setColor(colorInput.value);
@@ -208,9 +183,6 @@ function setup() {
 
   sendButton = document.getElementById("send-mode")
   sendButton.addEventListener('click', () => {
-    console.log("send")
-    console.log(lastMode)
-    console.log(view_mods.indexOf(lastMode))
     set_mode(view_mods.indexOf(lastMode))
     send_mode();
   })
@@ -235,13 +207,9 @@ function setup() {
     if (numMode < 17 && numMode != 1) {
       colorInput.value = '#ffffff';
       colorInput.disabled = true;
-      console.log('disable')
-      // colorInput.readOnly = true;
     }
     else {
       colorInput.disabled = false;
-      console.log('enable')
-      // colorInput.readOnly = false;
     }
     setColor(colorInput.value);
     viewSlider();
@@ -259,7 +227,6 @@ function setup() {
 
     if (numMode != 0) {
       last = document.querySelectorAll(".modButton")[numMode - 1];
-      console.log(last)
       last.style = "background-color: #202020;"
     }
   })
@@ -271,13 +238,9 @@ function setup() {
     if (numMode < 17 && numMode != 1) {
       colorInput.value = '#ffffff';
       colorInput.disabled = true;
-      console.log('disable')
-      // colorInput.readOnly = true;
     }
     else {
       colorInput.disabled = false;
-      console.log('enable')
-      // colorInput.readOnly = false;
     }
     setColor(colorInput.value);
     viewSlider()
@@ -289,10 +252,9 @@ function setup() {
     set_mode(numMode)
     try {
       last.style = "";
-    } catch (error) {}
+    } catch (error) { }
     if (numMode != 0) {
       last = document.querySelectorAll(".modButton")[numMode - 1];
-      console.log(last)
       last.style = "background-color: #202020;"
     }
   })
@@ -355,7 +317,6 @@ function setup() {
       send_mode();
       timer = setInterval(() => {
         lastMode();
-        console.log(timer);
         view_leds();
       }, document.getElementById('delay').value, view)
     }
@@ -402,10 +363,8 @@ function setup() {
 
   document.getElementById('delay').addEventListener('input', (e) => {
     var val = e.target.value
-    console.log(e)
     clearTimeout(timer);
     setColor(colorInput.value);
-    // drop_value();
     timer = setInterval(() => {
       lastMode();
       view_leds();
@@ -424,9 +383,7 @@ function setup() {
   });
 
   selects.addEventListener('click', () => {
-    console.log(update_port)
     if (update_port) {
-      console.log('aboba')
       get_ports()
     }
     update_port = true

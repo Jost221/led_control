@@ -256,14 +256,14 @@ void reversRainbowWave() {
 
 void actual_to_end() {
   CRGB led = leds[NUM_LEDS - 1];
-  for (int i = NUM_LEDS - 1; i >= 0; i--)
+  for (unsigned int i = NUM_LEDS - 1; i >= 0; i--)
     leds[i] = leds[i - 1];
   leds[0] = led;
 }
 
 void actual_to_start() {
   CRGB led = leds[0];
-  for (int i = 0; i < NUM_LEDS - 1; i++)
+  for (unsigned int i = 0; i < NUM_LEDS - 1; i++)
     leds[i] = leds[i + 1];
   leds[NUM_LEDS - 1] = led;
 }

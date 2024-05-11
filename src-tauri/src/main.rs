@@ -5,11 +5,10 @@ mod base_variables;
 
 use once_cell::sync::Lazy;
 use serde_json::json;
-use std::time::{Duration, Instant};
 
 #[cfg(target_os = "windows")]
 static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
-    base_variables::Controller::new("COM1".to_string(), 9_600)
+    base_variables::Controller::new("COM1".to_string(), 115_200)
 });
 
 #[cfg(target_os = "linux")]
@@ -19,7 +18,6 @@ static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
 
 #[tauri::command]
 fn set_mode(mode_index: i16) {
-    println!("{}", mode_index);
     unsafe{
         CONTROLLER.set_mode(mode_index as u8);
     }
@@ -49,7 +47,7 @@ fn set_brightnes(brightnes: u8){
 #[tauri::command]
 fn set_port(port_name: &str){
     unsafe{
-        CONTROLLER.set_port(port_name.to_string(), 9_600)
+        CONTROLLER.set_port(port_name.to_string(), 115_200)
     }
 }
 

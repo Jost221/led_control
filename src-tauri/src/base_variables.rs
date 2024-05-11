@@ -7,6 +7,7 @@
 
 use serialport;
 use String;
+use std::time::Duration;
 
 pub struct Color{
     r: u8,
@@ -28,6 +29,7 @@ impl Controller{
         Controller {
             port_name: port_name.clone(),
             _port : serialport::new(port_name, rate)
+                    .timeout(Duration::from_millis(100))
                     .open()
                     .expect("Failed to open port"),
             mode : 2,
@@ -42,25 +44,21 @@ impl Controller{
     }
 
     pub fn send_mode(&mut self){
-        println!("mode = {:?}", [0 as u8, self.mode]);
-        // return;
+
         self._port
-            .write(&[0 as u8, self.mode])
+            .write(&[0u8, self.mode])
             .expect("error send to");
     }
 
     pub fn send_color(&mut self){
-        let color_rgb = &[1 as u8, self.color.r, self.color.g, self.color.b];
-        println!("color = {:?}", color_rgb);
-        // return;
+        let color_rgb = &[1 as u8, self.fix_value(self.color.r), self.fix_value(self.color.g), self.fix_value(self.color.b)];
+
         self._port
             .write(color_rgb)
             .expect("error send to");
     }
 
     pub fn send_brightnes(&mut self){
-        println!("brightnes = {:?}", &[2 as u8, self.brightness]);
-        // return;
         self._port
             .write(&[2 as u8, self.brightness])
             .expect("error send to");
@@ -69,7 +67,6 @@ impl Controller{
     pub fn send_delay(&mut self){
         let mut delay = self.delay.to_string().as_bytes().to_vec();
         delay.insert(0, 3);
-        println!("delay = {:?}", delay);
         self._port
             .write(&delay[..])
             .expect("error send delay");
@@ -82,10 +79,8 @@ impl Controller{
     }
 
     pub fn set_port(&mut self, port_name: String, rate: u32){
-        println!("{} {}", port_name, self.port_name);
         if port_name != self.port_name {
             self.port_name = port_name;
-            println!("set_port");
             self._port = serialport::new(self.port_name.clone(), rate)
                 .open()
                 .expect("error open port");
@@ -99,6 +94,7 @@ impl Controller{
     pub fn set_color(&mut self, color: Color){
         self.color = color;
         self.send_color();
+        // self.send();
     }
 
     pub fn set_rgb(&mut self, r: u8, g:u8, b:u8){
@@ -117,12 +113,14 @@ impl Controller{
     pub fn set_brightnes(&mut self, brightness: u8){
         self.brightness = brightness;
         self.send_brightnes()
+        // self.send();
     }
 
-    pub fn read(&mut self) -> Vec<u8>{
-        let mut serial_buf: Vec<u8> = vec![0; 32];
-        self._port.read(serial_buf.as_mut_slice()).expect("Found no data!");
-        serial_buf
+    fn fix_value(&mut self, value: u8) -> u8{
+        if value < 4 {
+            return 4u8
+        }
+        value
     }
 }
 
