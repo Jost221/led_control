@@ -5,7 +5,6 @@
   font-weight: 400;
 
   color: #0f0f0f;
-  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -53,6 +52,9 @@
 
 button,
 select {
+
+  -webkit-appearance: none;
+
   border-radius: 8px;
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
@@ -60,7 +62,7 @@ select {
   font-weight: 500;
   font-family: inherit;
   color: #000000;
-  background-color: #ffffff;
+  background: #000000;
   transition: border-color 0.25s;
   /* box-shadow: 2px 2px 2px 2px rgba(0, 0, 0, 0.2); */
   margin: 3px;
@@ -273,7 +275,7 @@ input[type=color]::-moz-color-swatch {
   color: hsla(258, 100%, 50%, 0.985);
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) { */
   :root {
     color: #f6f6f6;
     background-color: #2f2f2f;
@@ -333,4 +335,4 @@ input[type=color]::-moz-color-swatch {
   .line{
     background-color: #d1d1d1;
   }
-}
+/* } */
