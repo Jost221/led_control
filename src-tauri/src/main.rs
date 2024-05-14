@@ -13,7 +13,7 @@ static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
 
 #[cfg(target_os = "linux")]
 static mut CONTROLLER:  Lazy<base_variables::Controller> = Lazy::new(|| {
-    base_variables::Controller::new("/dev/ttyUSB0".to_string(), 9_600)
+    base_variables::Controller::new("/dev/ttyUSB0".to_string(), 115_200)
 });
 
 #[tauri::command]
